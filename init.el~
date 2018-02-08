@@ -1,0 +1,231 @@
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+
+(package-initialize)
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+
+(setq initial-scratch-message nil)
+
+(tooltip-mode nil)
+
+(set-scroll-bar-mode 'right)
+
+(fset 'yes-or-no-p 'y-or-n-p)
+
+(setq inhibit-startup-message t)
+
+(if (>= emacs-major-version 24)
+    (setq-default bidi-display-reordering nil))
+
+(when (>= emacs-major-version 23)
+  (global-visual-line-mode 1)
+  (setq line-move-visual nil))
+
+(show-paren-mode t)
+
+(blink-cursor-mode 1)
+
+(line-number-mode 1)
+
+(column-number-mode 1)
+
+;; Mac stuff
+(setq mac-option-modifier 'super)
+(setq mac-command-modifier 'meta)
+(setq visible-bell nil) ;; The default
+(setq ring-bell-function 'ignore)
+(defun set-frame-size-according-to-resolution ()
+  (interactive)
+  (if window-system
+  (progn
+    ;; use 120 char wide window for largeish displays
+    ;; and smaller 80 column windows for smaller displays
+    ;; pick whatever numbers make sense for you
+    (if (> (x-display-pixel-width) 1280)
+           (add-to-list 'default-frame-alist (cons 'width 120))
+           (add-to-list 'default-frame-alist (cons 'width 80)))
+    ;; for the height, subtract a couple hundred pixels
+    ;; from the screen height (for panels, menubars and
+    ;; whatnot), then divide by the height of a char to
+    ;; get the height we want
+    (add-to-list 'default-frame-alist
+         (cons 'height (/ (- (x-display-pixel-height) 200)
+                             (frame-char-height)))))))
+
+(set-frame-size-according-to-resolution)
+
+;(global-hl-line-mode 1) ; turn on highlighting current line
+
+(delete-selection-mode 1)
+
+(setq expand-region-contract-fast-key ".")
+
+(setq scroll-step 1)
+
+(setq-default fill-column 80)
+
+(setq message-log-max 1000)
+
+(setq-default indent-tabs-mode nil)
+
+(setq tab-width 4)
+
+(setq kill-ring-max 200)
+
+(setq require-final-newline t track-eol t)
+
+;; works well with Github
+(global-auto-revert-mode t)
+
+(autopair-global-mode)
+(setq autopair-autowrap t)
+
+(ido-mode t)
+
+(recentf-mode t)
+(setq recentf-max-saved-items 200)
+
+(global-undo-tree-mode)
+
+(setq uniquify-buffer-name-style 'post-forward)
+(setq uniquify-after-kill-buffer-p nil)
+(setq uniquify-min-dir-content 2)
+
+(add-hook 'ido-setup-hook 'my-ido-keys)
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+(defun my-ido-keys ()
+  "Add my keybindings for ido."
+  (define-key ido-completion-map (kbd "C-;") 'ido-exit-minibuffer)
+  (define-key ido-completion-map (kbd "C-.") 'ido-magic-forward-char)
+  (define-key ido-completion-map " " 'ido-next-match)
+  (define-key ido-completion-map "\C-n" 'ido-next-match)
+  (define-key ido-completion-map "\C-o" 'ido-magic-forward-char)
+  (define-key ido-completion-map "\C-p" 'ido-prev-match)
+  (define-key ido-completion-map "\C-j" 'ido-prev-work-directory)
+  (define-key ido-completion-map "\C-l" 'ido-next-work-directory)
+  )
+
+;;(defun my-c-mode-hook ()
+  ;; add my personal style and set it for the current buffer
+;;(c-add-style "PERSONAL" my-c-style t))
+
+;;(add-hook 'c-mode-common-hook 'my-c-mode-hook)
+
+(setq c-default-style "linux"
+      c-basic-offset 4)
+
+(defadvice kill-ring-save (before slickcopy activate compile)
+  "When called interactively with no active region, copy a single line instead."
+  (interactive
+   (if (region-active-p) (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+
+(defadvice kill-region (before slickcut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if (region-active-p) (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+(global-set-key (kbd "C-k") 'kill-region)
+
+(defun occur-at-point ()
+  (interactive)
+  (let (default input)
+    (when (thing-at-point 'symbol)
+      (setq default (buffer-substring
+                     (progn (beginning-of-thing 'symbol) (point))
+                     (progn (end-of-thing 'symbol) (point)))))
+    (if (> emacs-major-version 22)
+        (setq input (read-regexp "List lines matching regexp" default))
+      (setq input (read-string "List lines matching regexp " nil nil default)))
+    (occur-1 input nil (list (current-buffer)))))
+
+;; sets "occur" function
+(global-set-key (kbd "M-o") 'occur-at-point)
+
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+
+(global-set-key (kbd "C-x v") 'compile)
+
+
+(add-to-list 'load-path "~/.emacs.d/lisp")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
+(ac-config-default)
+(setq ac-modes '(c++-mode rust-mode))
+
+(global-auto-complete-mode t)
+(global-linum-mode 1)
+
+;; Google's Material Design Theme
+(load-theme 'material t)
+
+;; Avy
+(global-set-key (kbd "C-:") 'avy-goto-char-2)
+
+;; OCaml Mode
+(load "/Users/andrewyli/.opam/system/share/emacs/site-lisp/tuareg-site-file")
+(setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
+(setq exec-path (append exec-path '("/Library/TeX/texbin")))
+
+(global-set-key (kbd "C-x C-;") 'comment-or-uncomment-region)
+
+(require 'auto-complete)
+(require 'auto-complete-config)
+(ac-config-default)
+
+(require 'ac-math)
+(add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
+
+(defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+  (setq ac-sources
+        (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
+                ac-sources))
+  )
+()
+(add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
+
+(when (memq window-system '(mac ns))
+  (exec-path-from-shell-initialize))
+
+(exec-path-from-shell-copy-env "virtualenv")
+(require 'epc)
+
+(add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:setup-keys t)                      ; optional
+(setq jedi:complete-on-dot t)
+
+(use-package rainbow-delimiters
+  :ensure t)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+
+;; replace the `completion-at-point' and `complete-symbol' bindings in
+;; irony-mode's buffers by irony-mode's function
+(defun my-irony-mode-hook ()
+  (define-key irony-mode-map [remap completion-at-point]
+    'irony-completion-at-point-async)
+  (define-key irony-mode-map [remap complete-symbol]
+    'irony-completion-at-point-async))
+(add-hook 'irony-mode-hook 'my-irony-mode-hook)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-hook 'python-mode-hook '(lambda ()
+ (setq python-indent 4)))

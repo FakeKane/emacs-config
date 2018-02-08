@@ -1,0 +1,33 @@
+cd Dropbox/Berkeley/year1/CS61A/lab/
+ls
+mv ~/Downloads/lab14.zip .
+unzip lab14.zip 
+cd lab14
+ls
+lab14.py
+open lab14.py
+python3 ok -q question1
+python3 ok -q question1
+python3 ok --submit
+python3 ok --submit
+ls
+cd ..
+cd lab4
+ls
+git add -A
+git commit -m "adding lab4"
+git push origin master
+java p1_6.java
+java p1_6.java
+ls
+javac p1_6.java
+javac p1_6.java
+javac p1_6.java
+java p1_6
+javac p1_6.java
+javac p1_6.java
+java p1_6
+ls
+ls
+python -i parse.py
+python -i parse.py

@@ -1,0 +1,63 @@
+
+;; ----- smex-history -----
+(
+ replace-regexp
+ gdb
+ c-mode
+ simula-mode
+ irony-mode
+ mkdir
+ recover-this-file
+)
+
+;; ----- smex-data -----
+(
+ (package-install . 10)
+ (list-packages . 13)
+ (customize-group . 2)
+ (irony-mode . 9)
+ (irony-install-server . 6)
+ (info . 1)
+ (company-mode . 4)
+ (eval-buffer . 4)
+ (auto-complete-mode . 3)
+ (jedi:install-server . 17)
+ (pyenv-mode . 1)
+ (pyvenv-activate . 3)
+ (virtualenv-workon . 1)
+ (list-processes . 2)
+ (jedi-mode . 7)
+ (recover-file . 1)
+ (jedi:setup . 1)
+ (jedi:ac-setup . 1)
+ (rainbow-delimiters-mode . 1)
+ (replace-regexp . 156)
+ (mkdir . 47)
+ (shell . 5)
+ (undo-tree-visualize . 8)
+ (jedi:get-in-function-call . 1)
+ (jedi:show-doc . 1)
+ (LaTeX-math-overline . 1)
+ (recover-this-file . 11)
+ (undo . 2)
+ (help-with-tutorial . 1)
+ (copy-file . 1)
+ (snake . 1)
+ (eshell . 5)
+ (doctor . 1)
+ (butterfly . 1)
+ (pong . 1)
+ (tetris . 2)
+ (mpuz . 1)
+ (make-face-bold . 1)
+ (message-bold-region . 1)
+ (rename-file . 4)
+ (enriched-mode . 2)
+ (delete-directory . 1)
+ (python-indent-guess-indent-offset . 1)
+ (indent-rigidly . 18)
+ (apropos . 1)
+ (simula-mode . 5)
+ (c-mode . 3)
+ (gdb . 1)
+)
