@@ -1,44 +1,22 @@
-;; -*- emacs-lisp -*- <18/02/08 12:54:22 /Users/andrewyli/.emacs.d/tramp>
+;; -*- emacs-lisp -*- <18/10/09 19:14:18 /Users/andrewyli/.emacs.d/tramp>
 ;; Tramp connection history.  Don't change this file.
 ;; You can delete it, forcing Tramp to reapply the checks.
 
-((["ssh" "cs61c-aea" "hive1.cs.berkeley.edu" nil nil]
+((["ssh" nil "128.32.192.73#8028" nil nil]
+  ("uname" "Linux 4.15.0-36-generic")
   ("locale" "LC_ALL=en_US.utf8")
-  ("uname" "Linux 4.4.0-109-generic")
   ("test" "test")
   ("remote-path"
    ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
   ("remote-shell" "/bin/sh")
-  ("~" "/home/cc/cs61c/sp18/class/cs61c-aea")
-  ("ls" "/bin/ls --color=never")
-  ("ls-dired" t)
-  ("stat" "\\stat")
-  ("file-exists" "test -e")
-  ("id" "/usr/bin/id")
-  ("gid-integer" 20540)
+  ("stat" nil)
   ("perl-file-spec" t)
   ("perl-cwd-realpath" t)
   ("perl" "\\perl")
-  ("gid-string" "cs61c")
-  ("readlink" "\\readlink")
-  ("git" "\\git")
-  ("gvfs-monitor-dir" "/usr/bin/gvfs-monitor-dir"))
- (["scp" nil "ssh" nil nil]
-  nil)
- (["ssh" "cs61c-aea" "hive10.cs.berkeley.edu" nil nil]
-  ("locale" "LC_ALL=en_US.utf8")
-  ("uname" "Linux 4.4.0-109-generic")
-  ("test" "test")
-  ("remote-path"
-   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
-  ("remote-shell" "/bin/sh")
-  ("stat" "\\stat")
-  ("file-exists" "test -e")
   ("id" "/usr/bin/id")
-  ("gid-string" "cs61c")
-  ("perl-file-spec" t)
-  ("perl-cwd-realpath" t)
-  ("perl" "\\perl")
-  ("gid-integer" 20540)
+  ("gid-string" "andrewyli")
   ("readlink" "\\readlink")
-  ("gvfs-monitor-dir" "/usr/bin/gvfs-monitor-dir")))
+  ("file-exists" "test -e")
+  ("gid-integer" 1003))
+ (["ssh" nil "128.32.192.73" nil nil]
+  nil))

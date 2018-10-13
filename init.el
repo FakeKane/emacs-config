@@ -38,24 +38,24 @@
 (defun set-frame-size-according-to-resolution ()
   (interactive)
   (if window-system
-  (progn
-    ;; use 120 char wide window for largeish displays
-    ;; and smaller 80 column windows for smaller displays
-    ;; pick whatever numbers make sense for you
-    (if (> (x-display-pixel-width) 1280)
-           (add-to-list 'default-frame-alist (cons 'width 120))
-           (add-to-list 'default-frame-alist (cons 'width 80)))
-    ;; for the height, subtract a couple hundred pixels
-    ;; from the screen height (for panels, menubars and
-    ;; whatnot), then divide by the height of a char to
-    ;; get the height we want
-    (add-to-list 'default-frame-alist
-         (cons 'height (/ (- (x-display-pixel-height) 200)
-                             (frame-char-height)))))))
+      (progn
+        ;; use 120 char wide window for largeish displays
+        ;; and smaller 80 column windows for smaller displays
+        ;; pick whatever numbers make sense for you
+        (if (> (x-display-pixel-width) 1280)
+            (add-to-list 'default-frame-alist (cons 'width 120))
+          (add-to-list 'default-frame-alist (cons 'width 80)))
+        ;; for the height, subtract a couple hundred pixels
+        ;; from the screen height (for panels, menubars and
+        ;; whatnot), then divide by the height of a char to
+        ;; get the height we want
+        (add-to-list 'default-frame-alist
+                     (cons 'height (/ (- (x-display-pixel-height) 200)
+                                      (frame-char-height)))))))
 
 (set-frame-size-according-to-resolution)
 
-;(global-hl-line-mode 1) ; turn on highlighting current line
+                                        ;(global-hl-line-mode 1) ; turn on highlighting current line
 
 (delete-selection-mode 1)
 
@@ -107,7 +107,7 @@
   )
 
 ;;(defun my-c-mode-hook ()
-  ;; add my personal style and set it for the current buffer
+;; add my personal style and set it for the current buffer
 ;;(c-add-style "PERSONAL" my-c-style t))
 
 ;;(add-hook 'c-mode-common-hook 'my-c-mode-hook)
@@ -161,6 +161,22 @@
 
 ;; Google's Material Design Theme
 (load-theme 'material t)
+
+
+;; (use-package spacemacs-theme
+;;   :ensure t
+;;   :init
+;;   (load-theme 'spacemacs-dark t)
+;;   (setq spacemacs-theme-org-agenda-height nil)
+;;   (setq spacemacs-theme-org-height nil))
+
+;; (use-package spaceline
+;;   :demand t
+;;   :init
+;;   (setq powerline-default-separator 'arrow-fade)
+;;   :config
+;;   (require 'spaceline-config)
+;;   (spaceline-spacemacs-theme))
 
 ;; Avy
 (global-set-key (kbd "C-:") 'avy-goto-char-2)
@@ -227,4 +243,35 @@
 
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-hook 'python-mode-hook '(lambda ()
- (setq python-indent 4)))
+                               (setq python-indent 4)))
+
+;; (package-initialize)
+;; (elpy-enable)
+
+(use-package magit
+  :ensure t)
+(global-set-key (kbd "C-x g") 'magit-status)
+
+(set-face-attribute 'default nil :height 140)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (markdown-mode go-mode go which-key web-mode virtualenv use-package undo-tree spaceline smex rainbow-delimiters pyenv-mode material-theme magit jedi irony-eldoc idomenu hydra flycheck-pos-tip expand-region exec-path-from-shell elpy counsel company-jedi company-irony-c-headers company-irony company-anaconda avy autopair auto-complete-clang-async auto-complete-clang auctex ac-math ac-clang))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(add-hook 'go-mode-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'gofmt-before-save)
+            (setq tab-width 4)
+            (setq indent-tabs-mode 0)))
+
+(global-set-key (kbd "C-c l") 'org-store-link)
