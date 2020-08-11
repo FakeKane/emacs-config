@@ -69,7 +69,7 @@
 
 (setq-default indent-tabs-mode nil)
 
-(setq tab-width 4)
+(setq-default tab-width 4)
 
 (setq kill-ring-max 200)
 
@@ -78,8 +78,15 @@
 ;; works well with Github
 (global-auto-revert-mode t)
 
-(autopair-global-mode)
-(setq autopair-autowrap t)
+(electric-pair-mode 1)
+(add-hook
+ 'rust-mode-hook
+ (lambda ()
+   (setq-local electric-pair-inhibit-predicate
+               `(lambda (c)
+                  (if (char-equal c ?<) t (,electric-pair-inhibit-predicate c))))))
+;; (autopair-global-mode)
+;; (setq autopair-autowrap t)
 
 (ido-mode t)
 
@@ -146,21 +153,29 @@
 (global-set-key (kbd "M-o") 'occur-at-point)
 
 (global-set-key (kbd "M-x") 'smex)
-(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; (global-set-key (kbd "M-x") 'helm-M-x)
+(global-set-key (kbd "C-.") 'helm-imenu-anywhere)
+;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
 
 (global-set-key (kbd "C-x v") 'compile)
 
 
-(add-to-list 'load-path "~/.emacs.d/lisp")
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
-(ac-config-default)
+;; (require 'auto-complete-config)
+;; (add-to-list 'load-path "~/.emacs.d/lisp")
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d//ac-dict")
+;; (ac-config-default)
 
-(global-auto-complete-mode t)
+(require 'company)
+(add-hook 'global-init-hook 'global-company-mode)
+(add-to-list 'company-backends 'company-c-headers)
+(setq company-minimum-prefix-length 1
+      company-idle-delay 0.0)
+
+(add-hook 'company-mode-hook (lambda () (auto-complete-mode -1)))
 (global-linum-mode 1)
 
 ;; Google's Material Design Theme
-(load-theme 'material t)
+;; (load-theme 'material t)
 
 
 ;; (use-package spacemacs-theme
@@ -181,16 +196,14 @@
 ;; Avy
 (global-set-key (kbd "C-:") 'avy-goto-char-2)
 
-;; OCaml Mode
-(load "/Users/andrewyli/.opam/system/share/emacs/site-lisp/tuareg-site-file")
 (setenv "PATH" (concat (getenv "PATH") ":/Library/TeX/texbin"))
 (setq exec-path (append exec-path '("/Library/TeX/texbin")))
 
 (global-set-key (kbd "C-x C-;") 'comment-or-uncomment-region)
 
-(require 'auto-complete)
-(require 'auto-complete-config)
-(ac-config-default)
+;; (require 'auto-complete)
+;; (require 'auto-complete-config)
+;; (ac-config-default)
 
 (require 'ac-math)
 (add-to-list 'ac-modes 'latex-mode)   ; make auto-complete aware of `latex-mode`
@@ -217,20 +230,35 @@
   :ensure t)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
-(add-hook 'c++-mode-hook 'irony-mode)
-(add-hook 'c-mode-hook 'irony-mode)
-(add-hook 'objc-mode-hook 'irony-mode)
+(require 'lsp-ui)
+(add-hook 'lsp-mode-hook 'lsp-ui-mode)
 
-;; replace the `completion-at-point' and `complete-symbol' bindings in
-;; irony-mode's buffers by irony-mode's function
-(defun my-irony-mode-hook ()
-  (define-key irony-mode-map [remap completion-at-point]
-    'irony-completion-at-point-async)
-  (define-key irony-mode-map [remap complete-symbol]
-    'irony-completion-at-point-async))
-(add-hook 'irony-mode-hook 'my-irony-mode-hook)
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+(require 'ccls)
+(use-package lsp-mode
+  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+  :init (setq lsp-keymap-prefix "s-l")
+  :hook ((c++-mode . lsp)
+         ;; if you want which-key integration
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp)
+(use-package lsp-ui :commands lsp-ui-mode)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+(use-package company-lsp :commands company-lsp)
+(use-package ccls
+  :hook ((c-mode c++-mode) .
+         (lambda () (require 'ccls) (lsp))))
 
+(setq global-lsp-lens-mode nil)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+(package-install 'exec-path-from-shell)
+(exec-path-from-shell-initialize)
+;; optional if you want which-key integration
+(use-package which-key
+  :config
+  (which-key-mode))
 
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -260,7 +288,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (markdown-mode go-mode go which-key web-mode virtualenv use-package undo-tree spaceline smex rainbow-delimiters pyenv-mode material-theme magit jedi irony-eldoc idomenu hydra flycheck-pos-tip expand-region exec-path-from-shell elpy counsel company-jedi company-irony-c-headers company-irony company-anaconda avy autopair auto-complete-clang-async auto-complete-clang auctex ac-math ac-clang))))
+    (0blayout toml imenu-anywhere helm-lsp helm company-c-headers jedi lsp-treemacs company-lsp ccls lsp-ui lsp-mode toml-mode cargo rust-mode epc all-the-icons doom-modeline markdown-mode+ markdown-mode go-mode go which-key web-mode virtualenv use-package undo-tree spaceline smex rainbow-delimiters pyenv-mode material-theme idomenu hydra flycheck-pos-tip expand-region exec-path-from-shell elpy counsel company-jedi company-irony-c-headers company-irony company-anaconda avy auto-complete-clang-async auto-complete-clang auctex))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -275,3 +303,54 @@
             (setq indent-tabs-mode 0)))
 
 (global-set-key (kbd "C-c l") 'org-store-link)
+
+(setq-default c-basic-offset 2)
+
+;; (require 'doom-modeline)
+;; (doom-modeline-mode 1)
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(package-selected-packages
+;;    (quote
+;;     (doom-themes all-the-icons doom-modeline markdown-mode+ markdown-mode go-mode go which-key web-mode virtualenv use-package undo-tree spaceline smex rainbow-delimiters pyenv-mode material-theme magit jedi irony-eldoc idomenu hydra flycheck-pos-tip expand-region exec-path-from-shell elpy counsel company-jedi company-irony-c-headers company-irony company-anaconda avy autopair auto-complete-clang-async auto-complete-clang auctex ac-math ac-clang))))
+
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+(require 'doom-themes)
+
+;; Global settings (defaults)
+(setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+      doom-themes-enable-italic t) ; if nil, italics is universally disabled
+
+;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
+;; may have their own settings.
+(load-theme 'doom-one t)
+
+;; Enable flashing mode-line on errors
+(doom-themes-visual-bell-config)
+
+;; Enable custom neotree theme (all-the-icons must be installed!)
+(doom-themes-neotree-config)
+;; or for treemacs users
+(doom-themes-treemacs-config)
+
+;; Corrects (and improves) org-mode's native fontification.
+(doom-themes-org-config)
+
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+
+;;(use-package toml-mode)
+
+(use-package rust-mode
+  :hook (rust-mode . lsp))
+
+;; Add keybindings for interacting with Cargo
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
